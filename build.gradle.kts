@@ -39,6 +39,10 @@ allprojects {
         implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
         implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
         implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive")
+
+        testImplementation("org.springframework.boot:spring-boot-starter-test")
+        testImplementation("org.springframework.boot:spring-boot-starter-web")
+        testImplementation("org.springframework.boot:spring-boot-starter-webflux")
     }
 
     tasks.withType<KotlinCompile> {

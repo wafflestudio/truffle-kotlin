@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  io.wafflestudio.truffle.sdk.config.TruffleAutoConfiguration
+  com.wafflestudio.truffle.sdk.TruffleAutoConfiguration
