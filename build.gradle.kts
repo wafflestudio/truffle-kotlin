@@ -1,4 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.util.Properties
 
 plugins {
     id("org.springframework.boot") version "3.0.1" apply false
@@ -6,6 +9,7 @@ plugins {
     kotlin("jvm") version "1.8.0"
     kotlin("plugin.spring") version "1.8.0"
     id("org.jlleitschuh.gradle.ktlint") version "10.0.0"
+    id("maven-publish")
 }
 
 java.sourceCompatibility = JavaVersion.VERSION_17
@@ -45,6 +49,28 @@ allprojects {
         testImplementation("org.springframework.boot:spring-boot-starter-webflux")
     }
 
+    publishing {
+        repositories {
+            maven {
+                version = properties["version"]!!
+                name = "wafflestudio"
+                url = uri("https://wafflestudio-405906814034.d.codeartifact.ap-northeast-1.amazonaws.com/maven/truffle-kotlin/")
+                credentials {
+                    username = "aws"
+                    password = properties["authToken"].toString()
+                }
+            }
+        }
+
+        println(properties["authToken"].toString())
+
+        publications {
+            register<MavenPublication>("truffle-kotlin") {
+                from(components["java"])
+            }
+        }
+    }
+
     tasks.withType<KotlinCompile> {
         kotlinOptions {
             freeCompilerArgs = listOf("-Xjsr305=strict")
@@ -54,5 +80,20 @@ allprojects {
 
     tasks.withType<Test> {
         useJUnitPlatform()
+    }
+}
+
+task("updateVersion") {
+    properties["releaseVersion"]?.let { releaseVersion ->
+        val newSnapshotVersion = (releaseVersion as String).split(".").let {
+            "${it[0]}.${it[1].toInt() + 1}.0-SNAPSHOT"
+        }
+
+        val file = File(rootDir, "gradle.properties")
+        val prop = Properties().apply { load(FileInputStream(file)) }
+        if (prop.getProperty("version") != newSnapshotVersion) {
+            prop.setProperty("version", newSnapshotVersion)
+            prop.store(FileOutputStream(file), null)
+        }
     }
 }
