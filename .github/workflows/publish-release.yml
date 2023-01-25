@@ -32,7 +32,7 @@ jobs:
 
       - name: Update snapshot version
         run: |
-          ./gradlew updateVersion -Pversion=${{ github.event.release.tag_name }} --rerun-tasks
+          ./gradlew updateVersion -PreleaseVersion=${{ github.event.release.tag_name }} --rerun-tasks
 
       - name: Commit gradle.properties
         run: |
