@@ -62,8 +62,6 @@ allprojects {
             }
         }
 
-        println(properties["authToken"].toString())
-
         publications {
             register<MavenPublication>("truffle-kotlin") {
                 from(components["java"])
