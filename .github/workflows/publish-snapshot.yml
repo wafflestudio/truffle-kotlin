@@ -19,13 +19,6 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Get AWS CodeArtifact auth token
-        run: |
-          echo "auth_token=$(aws codeartifact get-authorization-token \
-            --domain wafflestudio --domain-owner 405906814034 \
-            --query authorizationToken --region ap-northeast-1)" \
-            >> $GITHUB_ENV
-
       - name: Publish snapshot
         run: |
-          ./gradlew clean publish -PauthToken=${{ env.auth_token }}
+          ./gradlew clean publish
