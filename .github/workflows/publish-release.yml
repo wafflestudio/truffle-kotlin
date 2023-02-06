@@ -38,6 +38,8 @@ jobs:
         run: |
           git config --global user.name 'truffle-kotlin'
           git config --global user.email 'truffle-kotlin@wafflestudio.com'
+          git fetch
+          git checkout master
           git add ./gradle.properties
           git commit -m "Automated commit by GitHub Actions"
           git push
