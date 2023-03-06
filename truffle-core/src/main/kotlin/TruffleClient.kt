@@ -59,6 +59,8 @@ class DefaultTruffleClient(
     }
 
     override fun sendEvent(ex: Throwable) {
+        if (truffleApp.phase == "local" || truffleApp.phase == "test") return
+
         events.tryEmit(
             TruffleEvent(
                 app = truffleApp,

@@ -5,7 +5,7 @@ import java.io.FileOutputStream
 import java.util.Properties
 
 plugins {
-    id("org.springframework.boot") version "3.0.1" apply false
+    id("org.springframework.boot") version "3.0.3" apply false
     id("io.spring.dependency-management") version "1.1.0"
     kotlin("jvm") version "1.8.0"
     kotlin("plugin.spring") version "1.8.0"
