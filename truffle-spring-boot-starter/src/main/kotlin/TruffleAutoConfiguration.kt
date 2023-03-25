@@ -3,6 +3,7 @@ package com.wafflestudio.truffle.sdk
 import ch.qos.logback.classic.LoggerContext
 import com.wafflestudio.truffle.sdk.core.IHub
 import com.wafflestudio.truffle.sdk.core.Truffle
+import com.wafflestudio.truffle.sdk.logback.TruffleAppender
 import com.wafflestudio.truffle.sdk.reactive.TruffleWebExceptionHandler
 import com.wafflestudio.truffle.sdk.servlet.TruffleHandlerExceptionResolver
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass
@@ -41,7 +42,7 @@ class TruffleAutoConfiguration {
         }
     }
 
-    @ConditionalOnClass(LoggerContext::class)
+    @ConditionalOnClass(value = [LoggerContext::class, TruffleAppender::class])
     @ConditionalOnProperty(value = ["truffle.logback.enabled"], havingValue = "true", matchIfMissing = true)
     @Configuration
     class TruffleLogbackConfiguration {
