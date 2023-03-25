@@ -9,4 +9,5 @@ dependencies {
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
     implementation(project(":truffle-core"))
+    compileOnly(project(":truffle-logback"))
 }

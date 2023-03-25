@@ -1,6 +1,6 @@
 package com.wafflestudio.truffle.sdk.core.protocol
 
-data class TruffleRuntime(
-    val name: String,
-    val version: String,
-)
+object TruffleRuntime {
+    const val name = "Java"
+    val version = System.getProperty("java.version")
+}
