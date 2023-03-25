@@ -18,7 +18,6 @@ class TruffleWebExceptionHandler(private val hub: IHub) : WebExceptionHandler {
                 TruffleEvent(
                     level = TruffleLevel.FATAL,
                     exception = TruffleException(ex),
-                    message = null,
                 )
             )
         }

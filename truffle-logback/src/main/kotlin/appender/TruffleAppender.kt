@@ -31,11 +31,22 @@ class TruffleAppender : UnsynchronizedAppenderBase<ILoggingEvent>() {
     private fun createEvent(eventObject: ILoggingEvent): TruffleEvent {
         val exception = eventObject.throwableProxy?.let {
             TruffleException((it as ThrowableProxy).throwable)
-        }
+        } ?: TruffleException(
+            className = eventObject.loggerName,
+            message = eventObject.formattedMessage,
+            elements = eventObject.callerData.map {
+                TruffleException.Element(
+                    className = it.className,
+                    methodName = it.methodName,
+                    fileName = it.fileName ?: "",
+                    lineNumber = it.lineNumber,
+                    isInAppInclude = true, // FIXME
+                )
+            },
+        )
 
         return TruffleEvent(
             level = TruffleLevel.from(eventObject.level),
-            message = eventObject.formattedMessage,
             exception = exception,
         )
     }

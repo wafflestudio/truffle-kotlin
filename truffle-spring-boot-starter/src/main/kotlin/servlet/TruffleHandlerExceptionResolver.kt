@@ -24,7 +24,6 @@ class TruffleHandlerExceptionResolver(private val hub: IHub) : HandlerExceptionR
                 TruffleEvent(
                     level = TruffleLevel.FATAL,
                     exception = TruffleException(ex),
-                    message = null,
                 )
             )
         }
