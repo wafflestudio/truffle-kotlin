@@ -3,6 +3,7 @@ package com.wafflestudio.truffle.sdk.logback
 import ch.qos.logback.classic.spi.ILoggingEvent
 import ch.qos.logback.classic.spi.ThrowableProxy
 import ch.qos.logback.core.UnsynchronizedAppenderBase
+import com.wafflestudio.truffle.sdk.core.IHub
 import com.wafflestudio.truffle.sdk.core.Truffle
 import com.wafflestudio.truffle.sdk.core.TruffleOptions
 import com.wafflestudio.truffle.sdk.core.protocol.TruffleEvent
@@ -11,11 +12,10 @@ import com.wafflestudio.truffle.sdk.core.protocol.TruffleLevel
 
 class TruffleAppender : UnsynchronizedAppenderBase<ILoggingEvent>() {
     lateinit var options: TruffleOptions
+    private lateinit var hub: IHub
 
     override fun start() {
-        if (!Truffle.isInitialized()) {
-            Truffle.init(options)
-        }
+        hub = Truffle.init(options)
         super.start()
     }
 
@@ -24,7 +24,7 @@ class TruffleAppender : UnsynchronizedAppenderBase<ILoggingEvent>() {
             !eventObject.loggerName.startsWith("com.wafflestudio.truffle.sdk")
         ) {
             val truffleEvent = createEvent(eventObject)
-            Truffle.captureEvent(truffleEvent)
+            hub.captureEvent(truffleEvent)
         }
     }
 

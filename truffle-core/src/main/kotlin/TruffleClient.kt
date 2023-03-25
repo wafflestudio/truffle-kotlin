@@ -13,11 +13,11 @@ import org.springframework.web.reactive.function.client.bodyToMono
 import java.time.Duration
 import java.util.concurrent.Executors
 
-interface TruffleClient {
+internal interface TruffleClient {
     fun sendEvent(truffleEvent: TruffleEvent)
 }
 
-class DefaultTruffleClient(
+internal class DefaultTruffleClient(
     private val phase: String,
     apiKey: String,
     webClientBuilder: WebClient.Builder,
@@ -54,6 +54,7 @@ class DefaultTruffleClient(
 
     override fun sendEvent(truffleEvent: TruffleEvent) {
         if (phase == "local" || phase == "test") return
+
         events.tryEmit(truffleEvent)
     }
 }

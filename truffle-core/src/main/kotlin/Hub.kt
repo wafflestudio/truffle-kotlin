@@ -3,7 +3,7 @@ package com.wafflestudio.truffle.sdk.core
 import com.wafflestudio.truffle.sdk.core.protocol.TruffleEvent
 import org.springframework.web.reactive.function.client.WebClient
 
-class Hub(
+internal class Hub(
     truffleOptions: TruffleOptions,
     webClientBuilder: WebClient.Builder? = null,
 ) : IHub {

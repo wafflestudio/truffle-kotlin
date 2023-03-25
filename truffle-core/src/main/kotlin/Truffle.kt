@@ -1,15 +1,15 @@
 package com.wafflestudio.truffle.sdk.core
 
 import com.wafflestudio.truffle.sdk.core.protocol.TruffleEvent
-import org.slf4j.LoggerFactory
 import org.springframework.web.reactive.function.client.WebClient
 
 object Truffle {
-    private val logger = LoggerFactory.getLogger(javaClass)
     private lateinit var hub: IHub
 
-    @Synchronized fun isInitialized(): Boolean {
-        return ::hub.isInitialized
+    internal object HubAdapter : IHub {
+        override fun captureEvent(truffleEvent: TruffleEvent) {
+            Truffle.captureEvent(truffleEvent)
+        }
     }
 
     // for modules without access WebClient.Builder
@@ -18,19 +18,17 @@ object Truffle {
     }
 
     @Synchronized fun init(truffleOptions: TruffleOptions, webClientBuilder: WebClient.Builder? = null): IHub {
-        if (isInitialized()) {
-            logger.warn("Truffle is already initialized. Previous configuration will be used.")
+        if (::hub.isInitialized) {
             return hub
         }
 
         validateConfig(truffleOptions)
 
-        val hub = Hub(truffleOptions, webClientBuilder)
-        this.hub = hub
-        return hub
+        this.hub = Hub(truffleOptions, webClientBuilder)
+        return HubAdapter
     }
 
-    fun captureEvent(truffleEvent: TruffleEvent) {
+    private fun captureEvent(truffleEvent: TruffleEvent) {
         hub.captureEvent(truffleEvent)
     }
 
