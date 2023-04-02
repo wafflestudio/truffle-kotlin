@@ -1,5 +1,4 @@
 truffle:
+  enabled: true
   client:
-    name: snutt
-    phase: dev
     api-key: abcdef

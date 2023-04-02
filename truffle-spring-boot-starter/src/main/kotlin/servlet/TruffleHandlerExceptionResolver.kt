@@ -1,18 +1,18 @@
 package com.wafflestudio.truffle.sdk.servlet
 
-import com.wafflestudio.truffle.sdk.core.TruffleClient
+import com.wafflestudio.truffle.sdk.core.IHub
+import com.wafflestudio.truffle.sdk.core.protocol.TruffleEvent
+import com.wafflestudio.truffle.sdk.core.protocol.TruffleException
+import com.wafflestudio.truffle.sdk.core.protocol.TruffleLevel
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.core.annotation.Order
 import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.servlet.HandlerExceptionResolver
 import org.springframework.web.servlet.ModelAndView
-import java.lang.Exception
 
 @Order(-2)
-class TruffleHandlerExceptionResolver(
-    private val truffleClient: TruffleClient,
-) : HandlerExceptionResolver {
+class TruffleHandlerExceptionResolver(private val hub: IHub) : HandlerExceptionResolver {
     override fun resolveException(
         request: HttpServletRequest,
         response: HttpServletResponse,
@@ -20,7 +20,12 @@ class TruffleHandlerExceptionResolver(
         ex: Exception,
     ): ModelAndView? {
         if (ex !is ResponseStatusException) {
-            truffleClient.sendEvent(ex)
+            hub.captureEvent(
+                TruffleEvent(
+                    level = TruffleLevel.FATAL,
+                    exception = TruffleException(ex),
+                )
+            )
         }
 
         return null

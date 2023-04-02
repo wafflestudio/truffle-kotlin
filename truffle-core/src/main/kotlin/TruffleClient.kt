@@ -1,9 +1,6 @@
 package com.wafflestudio.truffle.sdk.core
 
-import com.wafflestudio.truffle.sdk.core.protocol.TruffleApp
 import com.wafflestudio.truffle.sdk.core.protocol.TruffleEvent
-import com.wafflestudio.truffle.sdk.core.protocol.TruffleException
-import com.wafflestudio.truffle.sdk.core.protocol.TruffleRuntime
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.asCoroutineDispatcher
@@ -16,25 +13,21 @@ import org.springframework.web.reactive.function.client.bodyToMono
 import java.time.Duration
 import java.util.concurrent.Executors
 
-interface TruffleClient {
-    fun sendEvent(ex: Throwable)
+internal interface TruffleClient {
+    fun sendEvent(truffleEvent: TruffleEvent)
 }
 
-class DefaultTruffleClient(
-    name: String,
-    phase: String,
+internal class DefaultTruffleClient(
     apiKey: String,
     webClientBuilder: WebClient.Builder,
 ) : TruffleClient {
     private val events = MutableSharedFlow<TruffleEvent>(extraBufferCapacity = 10)
-
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    private val truffleApp = TruffleApp(name, phase)
-    private val truffleRuntime = TruffleRuntime(name = "Java", version = System.getProperty("java.version"))
-
     init {
-        val coroutineScope = CoroutineScope(Executors.newSingleThreadExecutor().asCoroutineDispatcher())
+        val coroutineScope = CoroutineScope(
+            Executors.newSingleThreadExecutor { r -> Thread(r, "truffle-client") }.asCoroutineDispatcher()
+        )
         val webClient = webClientBuilder
             .baseUrl("https://truffle-api.wafflestudio.com")
             .defaultHeader("x-api-key", apiKey)
@@ -58,15 +51,7 @@ class DefaultTruffleClient(
         }
     }
 
-    override fun sendEvent(ex: Throwable) {
-        if (truffleApp.phase == "local" || truffleApp.phase == "test") return
-
-        events.tryEmit(
-            TruffleEvent(
-                app = truffleApp,
-                runtime = truffleRuntime,
-                exception = TruffleException(ex),
-            )
-        )
+    override fun sendEvent(truffleEvent: TruffleEvent) {
+        events.tryEmit(truffleEvent)
     }
 }
