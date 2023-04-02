@@ -8,7 +8,6 @@ internal class Hub(
     webClientBuilder: WebClient.Builder? = null,
 ) : IHub {
     private val client: TruffleClient = DefaultTruffleClient(
-        phase = truffleOptions.phase,
         apiKey = truffleOptions.apiKey,
         webClientBuilder = webClientBuilder ?: WebClient.builder(),
     )

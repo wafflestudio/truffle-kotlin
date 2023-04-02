@@ -18,7 +18,6 @@ internal interface TruffleClient {
 }
 
 internal class DefaultTruffleClient(
-    private val phase: String,
     apiKey: String,
     webClientBuilder: WebClient.Builder,
 ) : TruffleClient {
@@ -53,8 +52,6 @@ internal class DefaultTruffleClient(
     }
 
     override fun sendEvent(truffleEvent: TruffleEvent) {
-        if (phase == "local" || phase == "test") return
-
         events.tryEmit(truffleEvent)
     }
 }

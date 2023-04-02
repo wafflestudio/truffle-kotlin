@@ -36,8 +36,5 @@ object Truffle {
         if (truffleOptions.apiKey.isBlank()) {
             throw IllegalArgumentException("Truffle API key is blank")
         }
-        if (truffleOptions.phase.isBlank()) {
-            throw IllegalArgumentException("Truffle phase is blank")
-        }
     }
 }

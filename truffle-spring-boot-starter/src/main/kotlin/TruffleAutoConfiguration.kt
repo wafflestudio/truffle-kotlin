@@ -17,6 +17,7 @@ import org.springframework.web.server.WebExceptionHandler
 import org.springframework.web.servlet.HandlerExceptionResolver
 
 @EnableConfigurationProperties(TruffleProperties::class)
+@ConditionalOnProperty(value = ["truffle.enabled"], havingValue = "true")
 @Configuration
 class TruffleAutoConfiguration {
     @Bean
