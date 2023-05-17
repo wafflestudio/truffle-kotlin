@@ -35,7 +35,7 @@ allprojects {
 
     dependencyManagement {
         imports {
-            mavenBom("org.springframework.boot:spring-boot-dependencies:3.0.1")
+            mavenBom("org.springframework.boot:spring-boot-dependencies:3.0.3")
         }
     }
 

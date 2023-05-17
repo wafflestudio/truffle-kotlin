@@ -1,5 +1,7 @@
 rootProject.name = "truffle-kotlin"
 
-include("truffle-core")
-include("truffle-logback")
-include("truffle-spring-boot-starter")
+include(
+    "truffle-core",
+    "truffle-logback",
+    "truffle-spring-boot-starter",
+)
