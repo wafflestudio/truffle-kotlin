@@ -28,7 +28,10 @@ internal class DefaultTruffleClient(
 
     init {
         val coroutineScope = CoroutineScope(
-            Executors.newSingleThreadExecutor { r -> Thread(r, "truffle-client") }.asCoroutineDispatcher()
+            Executors.newSingleThreadExecutor {
+                r ->
+                Thread(r, "truffle-client").apply { isDaemon = true }
+            }.asCoroutineDispatcher()
         )
         val webClient = webClientBuilder
             .codecs {
