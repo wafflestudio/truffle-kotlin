@@ -9,11 +9,12 @@ import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.server.ServerWebExchange
 import org.springframework.web.server.WebExceptionHandler
 import reactor.core.publisher.Mono
+import reactor.netty.channel.AbortedException
 
 @Order(-2)
 class TruffleWebExceptionHandler(private val hub: IHub) : WebExceptionHandler {
     override fun handle(exchange: ServerWebExchange, ex: Throwable): Mono<Void> {
-        if (ex !is ResponseStatusException) {
+        if (ex !is ResponseStatusException && ex !is AbortedException) {
             hub.captureEvent(
                 TruffleEvent(
                     level = TruffleLevel.FATAL,
