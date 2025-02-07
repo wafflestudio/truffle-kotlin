@@ -6,6 +6,7 @@ import com.wafflestudio.truffle.sdk.core.protocol.TruffleException
 import com.wafflestudio.truffle.sdk.core.protocol.TruffleLevel
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import org.apache.catalina.connector.ClientAbortException
 import org.springframework.core.annotation.Order
 import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.servlet.HandlerExceptionResolver
@@ -19,7 +20,7 @@ class TruffleHandlerExceptionResolver(private val hub: IHub) : HandlerExceptionR
         handler: Any?,
         ex: Exception,
     ): ModelAndView? {
-        if (ex !is ResponseStatusException) {
+        if (ex !is ResponseStatusException && ex !is ClientAbortException) {
             hub.captureEvent(
                 TruffleEvent(
                     level = TruffleLevel.FATAL,
