@@ -23,6 +23,10 @@ class TruffleWebExceptionHandler(private val hub: IHub) : WebExceptionHandler {
             )
         }
 
-        return Mono.error(ex)
+        return if (exchange.response.isCommitted) {
+            Mono.empty()
+        } else {
+            Mono.error(ex)
+        }
     }
 }
