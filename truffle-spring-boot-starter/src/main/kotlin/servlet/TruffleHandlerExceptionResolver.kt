@@ -12,7 +12,7 @@ import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.servlet.HandlerExceptionResolver
 import org.springframework.web.servlet.ModelAndView
 
-@Order(-2)
+@Order(1)
 class TruffleHandlerExceptionResolver(private val hub: IHub) : HandlerExceptionResolver {
     override fun resolveException(
         request: HttpServletRequest,
