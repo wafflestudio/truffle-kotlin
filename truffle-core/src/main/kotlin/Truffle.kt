@@ -1,7 +1,7 @@
 package com.wafflestudio.truffle.sdk.core
 
 import com.wafflestudio.truffle.sdk.core.protocol.TruffleEvent
-import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.client.RestClient
 
 object Truffle {
     private lateinit var hub: IHub
@@ -12,19 +12,14 @@ object Truffle {
         }
     }
 
-    // for modules without access WebClient.Builder
-    fun init(truffleOptions: TruffleOptions): IHub {
-        return init(truffleOptions, null)
-    }
-
-    @Synchronized fun init(truffleOptions: TruffleOptions, webClientBuilder: WebClient.Builder? = null): IHub {
+    @Synchronized fun init(apiKey: String): IHub {
         if (::hub.isInitialized) {
             return hub
         }
 
-        validateConfig(truffleOptions)
+        validateConfig(apiKey)
 
-        this.hub = Hub(truffleOptions, webClientBuilder)
+        this.hub = Hub(apiKey)
         return HubAdapter
     }
 
@@ -32,8 +27,8 @@ object Truffle {
         hub.captureEvent(truffleEvent)
     }
 
-    private fun validateConfig(truffleOptions: TruffleOptions) {
-        if (truffleOptions.apiKey.isBlank()) {
+    private fun validateConfig(apiKey: String) {
+        if (apiKey.isBlank()) {
             throw IllegalArgumentException("Truffle API key is blank")
         }
     }

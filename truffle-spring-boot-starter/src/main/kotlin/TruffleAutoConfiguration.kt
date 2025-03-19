@@ -1,31 +1,27 @@
 package com.wafflestudio.truffle.sdk
 
-import ch.qos.logback.classic.LoggerContext
 import com.wafflestudio.truffle.sdk.core.IHub
 import com.wafflestudio.truffle.sdk.core.Truffle
-import com.wafflestudio.truffle.sdk.logback.TruffleAppender
 import com.wafflestudio.truffle.sdk.reactive.TruffleWebExceptionHandler
 import com.wafflestudio.truffle.sdk.servlet.TruffleHandlerExceptionResolver
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.server.WebExceptionHandler
 import org.springframework.web.servlet.HandlerExceptionResolver
 
 @EnableConfigurationProperties(TruffleProperties::class)
-@ConditionalOnProperty(value = ["truffle.enabled"], havingValue = "true")
 @Configuration
 class TruffleAutoConfiguration {
     @Bean
-    fun truffleHub(properties: TruffleProperties, webClientBuilder: WebClient.Builder): IHub {
-        return Truffle.init(properties, webClientBuilder)
+    fun truffleHub(properties: TruffleProperties): IHub {
+        return Truffle.init(properties.apiKey)
     }
 
     @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
+    @ConditionalOnProperty(value = ["truffle.auto.enabled"], havingValue = "true")
     @Configuration
     class TruffleServletConfiguration {
         @Bean
@@ -35,21 +31,12 @@ class TruffleAutoConfiguration {
     }
 
     @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE)
+    @ConditionalOnProperty(value = ["truffle.auto.enabled"], havingValue = "true")
     @Configuration
     class TruffleReactiveConfiguration {
         @Bean
         fun truffleWebExceptionHandler(truffleHub: IHub): WebExceptionHandler {
             return TruffleWebExceptionHandler(truffleHub)
-        }
-    }
-
-    @ConditionalOnClass(value = [LoggerContext::class, TruffleAppender::class])
-    @ConditionalOnProperty(value = ["truffle.logback.enabled"], havingValue = "true", matchIfMissing = true)
-    @Configuration
-    class TruffleLogbackConfiguration {
-        @Bean
-        fun truffleLogbackInitializer(truffleProperties: TruffleProperties): TruffleLogbackInitializer {
-            return TruffleLogbackInitializer(truffleProperties)
         }
     }
 }
