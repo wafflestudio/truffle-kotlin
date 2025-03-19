@@ -1,6 +1,6 @@
 # truffle-kotlin
 ## 와플스튜디오 로깅 라이브러리
-- 연동된 slack 채널에 로그를 전송
+- 연동된 와플스튜디오 slack 채널에 로그를 전송하는 kotlin(java) 라이브러리
 
 ## 사용법
 ### slack 채널 생성 및 key 신청
