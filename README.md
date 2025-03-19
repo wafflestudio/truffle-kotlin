@@ -20,7 +20,7 @@
     ```
 - 다음 spring 프로퍼티 설정
   - `truffle.client.api-key: {api-key}`
-    - api-key 는 slack 트러플 채널(#project-truffle)에서 발급받은 key
+    - `{api-key}` 는 slack 트러플 채널(#project-truffle)에서 발급받은 key
 - logback 연동 설정
   - logback-spring.xml 파일 (혹은 spring `logging.config`에 설정한 logback xml 설정 파일)에 truffle-appender.xml 추가
     - `<include resource="com/wafflestudio/truffle/sdk/logback/truffle-appender.xml"/>`
@@ -41,7 +41,6 @@
         </root>
     </configuration>
     ```
-    - `{api-key}` 는 slack 트러플 채널(#project-truffle)에서 발급받은 key
 
 #### 방식2) truffle-kotlin 연동
 - `build.gradle.kts` 혹은 `build.gradle` 파일에 아래와 같이 추가
@@ -56,4 +55,4 @@
 - 다음과 같은 spring 프로퍼티 생성
   - `truffle.auto.enabled: true`
   - `truffle.client.api-key: {api-key}`
-    - api-key 는 slack 트러플 채널(#project-truffle)에서 발급받은 key
+    - `{api-key}` 는 slack 트러플 채널(#project-truffle)에서 발급받은 key
