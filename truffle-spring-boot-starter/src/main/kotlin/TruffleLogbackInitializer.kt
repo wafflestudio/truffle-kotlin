@@ -24,7 +24,7 @@ class TruffleLogbackInitializer(
             val truffleAppender = TruffleAppender()
             truffleAppender.name = "TRUFFLE_APPENDER"
             truffleAppender.context = LoggerFactory.getILoggerFactory() as LoggerContext
-            truffleAppender.options = truffleProperties
+            truffleAppender.apiKey = truffleProperties.apiKey
 
             truffleAppender.start()
             rootLogger.addAppender(truffleAppender)

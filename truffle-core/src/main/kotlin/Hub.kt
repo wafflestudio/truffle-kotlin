@@ -1,15 +1,15 @@
 package com.wafflestudio.truffle.sdk.core
 
 import com.wafflestudio.truffle.sdk.core.protocol.TruffleEvent
-import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.client.RestClient
 
 internal class Hub(
-    truffleOptions: TruffleOptions,
-    webClientBuilder: WebClient.Builder? = null,
+    apiKey: String,
+    restClientBuilder: RestClient.Builder? = null,
 ) : IHub {
     private val client: TruffleClient = DefaultTruffleClient(
-        apiKey = truffleOptions.apiKey,
-        webClientBuilder = webClientBuilder ?: WebClient.builder(),
+        apiKey = apiKey,
+        restClientBuilder = restClientBuilder ?: RestClient.builder(),
     )
 
     override fun captureEvent(truffleEvent: TruffleEvent) {

@@ -5,8 +5,8 @@ import java.io.FileOutputStream
 import java.util.Properties
 
 plugins {
-    id("org.springframework.boot") version "3.0.3" apply false
-    id("io.spring.dependency-management") version "1.1.0"
+    id("org.springframework.boot") version "3.2.4" apply false
+    id("io.spring.dependency-management") version "1.1.4"
     kotlin("jvm") version "1.8.0"
     kotlin("plugin.spring") version "1.8.0"
     id("org.jlleitschuh.gradle.ktlint") version "10.0.0"
@@ -35,15 +35,14 @@ allprojects {
 
     dependencyManagement {
         imports {
-            mavenBom("org.springframework.boot:spring-boot-dependencies:3.0.3")
+            mavenBom("org.springframework.boot:spring-boot-dependencies:3.2.4")
         }
     }
 
     dependencies {
         implementation(kotlin("stdlib"))
         implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
-        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive")
+        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core")
 
         testImplementation("org.springframework.boot:spring-boot-starter-test")
         testImplementation("org.springframework.boot:spring-boot-starter-web")

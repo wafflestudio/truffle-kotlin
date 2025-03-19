@@ -1,17 +1,14 @@
 package com.wafflestudio.truffle.sdk.core
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.wafflestudio.truffle.sdk.core.protocol.TruffleEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.reactor.awaitSingle
 import org.slf4j.LoggerFactory
-import org.springframework.http.codec.json.Jackson2JsonEncoder
-import org.springframework.web.reactive.function.client.WebClient
-import org.springframework.web.reactive.function.client.bodyToMono
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory
+import org.springframework.web.client.RestClient
 import java.time.Duration
 import java.util.concurrent.Executors
 
@@ -21,7 +18,7 @@ internal interface TruffleClient {
 
 internal class DefaultTruffleClient(
     apiKey: String,
-    webClientBuilder: WebClient.Builder,
+    restClientBuilder: RestClient.Builder,
 ) : TruffleClient {
     private val events = MutableSharedFlow<TruffleEvent>(extraBufferCapacity = 10)
     private val logger = LoggerFactory.getLogger(javaClass)
@@ -33,10 +30,13 @@ internal class DefaultTruffleClient(
                 Thread(r, "truffle-client").apply { isDaemon = true }
             }.asCoroutineDispatcher()
         )
-        val webClient = webClientBuilder
-            .codecs {
-                it.defaultCodecs().jackson2JsonEncoder(Jackson2JsonEncoder(jacksonObjectMapper()))
-            }
+        val clientHttpRequestFactory = HttpComponentsClientHttpRequestFactory().apply {
+            setConnectTimeout(Duration.ofSeconds(5))
+            setConnectionRequestTimeout(Duration.ofSeconds(1))
+        }
+
+        val restClient = restClientBuilder
+            .requestFactory(clientHttpRequestFactory)
             .baseUrl("https://truffle-api.wafflestudio.com")
             .defaultHeader("x-api-key", apiKey)
             .build()
@@ -44,14 +44,12 @@ internal class DefaultTruffleClient(
         coroutineScope.launch(SupervisorJob()) {
             events.collect {
                 runCatching {
-                    webClient
+                    restClient
                         .post()
                         .uri("/events")
-                        .bodyValue(it)
+                        .body(it)
                         .retrieve()
-                        .bodyToMono<Unit>()
-                        .timeout(Duration.ofSeconds(1))
-                        .awaitSingle()
+                        .toBodilessEntity()
                 }.getOrElse {
                     logger.warn("Failed to request to truffle server", it)
                 }

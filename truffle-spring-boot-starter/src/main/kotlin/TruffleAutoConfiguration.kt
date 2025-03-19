@@ -12,20 +12,20 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.client.RestClient
 import org.springframework.web.server.WebExceptionHandler
 import org.springframework.web.servlet.HandlerExceptionResolver
 
 @EnableConfigurationProperties(TruffleProperties::class)
-@ConditionalOnProperty(value = ["truffle.enabled"], havingValue = "true")
 @Configuration
 class TruffleAutoConfiguration {
     @Bean
-    fun truffleHub(properties: TruffleProperties, webClientBuilder: WebClient.Builder): IHub {
-        return Truffle.init(properties, webClientBuilder)
+    fun truffleHub(properties: TruffleProperties, restClientBuilder: RestClient.Builder): IHub {
+        return Truffle.init(properties.apiKey, restClientBuilder)
     }
 
     @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
+    @ConditionalOnProperty(value = ["truffle.handler.enabled"], havingValue = "true")
     @Configuration
     class TruffleServletConfiguration {
         @Bean
@@ -35,6 +35,7 @@ class TruffleAutoConfiguration {
     }
 
     @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE)
+    @ConditionalOnProperty(value = ["truffle.handler.enabled"], havingValue = "true")
     @Configuration
     class TruffleReactiveConfiguration {
         @Bean
